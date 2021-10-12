@@ -39,7 +39,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session()); // Generates cookies
 
-mongoose.connect("mongodb://localhost:27017/userDB", { useNewUrlParser: true });
+mongoose.connect("mongodb+srv://admin-arjun:Test123@cluster0.vipcp.mongodb.net/userDB", { useNewUrlParser: true });
 
 const userSchema = new mongoose.Schema({
     email: String,
@@ -228,6 +228,11 @@ app.post("/login", function(req, res) {
     // });
 });
 
-app.listen(3000, function() {
+let port = process.env.PORT;
+if (port == null || port == "") {
+    port = 3000;
+}
+
+app.listen(port, function() {
     console.log("Server successfully running on Port: 3000");
 });
