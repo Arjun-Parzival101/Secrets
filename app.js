@@ -39,7 +39,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session()); // Generates cookies
 
-mongoose.connect("mongodb+srv://admin-arjun:Test123@cluster0.vipcp.mongodb.net/userDB", { useNewUrlParser: true });
+mongoose.connect("mongodb+srv://admin-arjun:Test123@cluster0.vipcp.mongodb.net/userDB", { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.set("useCreateIndex", true);
 
 const userSchema = new mongoose.Schema({
     email: String,
@@ -75,7 +76,7 @@ passport.use(new GoogleStrategy({
     },
     function(accessToken, refreshToken, profile, cb) {
         console.log(profile);
-        User.findOrCreate({ googleId: profile.id }, function(err, user) {
+        User.findOrCreate({ username: profile.emails[0].value, googleId: profile.id }, function(err, user) {
             return cb(err, user);
         });
     }
@@ -88,7 +89,7 @@ app.get("/", function(req, res) {
 });
 
 app.get("/auth/google", // Google Authentication route
-    passport.authenticate("google", { scope: ["profile"] }) // Authenticating user using passport based on user"s Google account
+    passport.authenticate("google", { scope: ["profile", "email"] }) // Authenticating user using passport based on user"s Google account
 );
 
 app.get("/auth/google/secrets",
